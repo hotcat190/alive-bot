@@ -154,30 +154,32 @@ client.on('interactionCreate', async (interaction) => {
                 var users = [];
     
                 try {
-                    const response = rest.get(`/channels/${channel.id}/polls/${message.id}/answers/${botChoice}`);
+                    console.log(`/channels/${channel.id}/polls/${message.id}/answers/${botChoice}`);
+                    const response = await rest.get(`/channels/${channel.id}/polls/${message.id}/answers/${botChoice}`);
                     console.log(Object.keys(response))
                     users = response.users;
                     console.log(users);
                 } catch (error) {
                     console.error('Error retrieving users list:', error);
                 }
-
-                const correctGuessers = ""; 
-                for (var i = 0; i < users.length; i++) {
-                    if (i === users.length-1) {
-                        correctGuessers += `${users[i].username}.`;
-                    }
-                    else correctGuessers += `${users[i].username}, `;
-                }                   
-                console.log(correctGuessers);
                 
+                const correctGuessers = ""; 
+                
+                if (users !== undefined) {
+                    for (var i = 0; i < users.length; i++) {
+                        if (i === users.length-1) {
+                            correctGuessers += `${users[i].username}.`;
+                        }
+                        else correctGuessers += `${users[i].username}, `;
+                    }                   
+                    console.log(correctGuessers);
+                }
+
                 await channel.send({
                     content: `The result was: **${botChoice}**.\n`
                         + `Correct guessers: ${correctGuessers}\n`
                         + ((botChoice === ANSWER_ID.EN) ? enLink : jpLink),
                 });
-    
-                
     
             }, pollDuration);
         } catch (error) {
