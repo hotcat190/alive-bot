@@ -122,7 +122,7 @@ client.on('interactionCreate', async (interaction) => {
                 const randomChoice = Math.random() < 0.5 ? 'en' : 'jp';
 
                 // Send the result message (poll closure)
-                await interaction.followUp(
+                await msg.reply(
                     `Poll closed! The correct answer was **${randomChoice}**.\n` +
                     `Results:\n` +
                     `🇬🇧 **en**: ${enVotes} votes\n` +
