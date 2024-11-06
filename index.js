@@ -51,7 +51,6 @@ console.log('Attempting to register slash commands...');
 
         console.log('Successfully reloaded application (/) commands.');
     } catch (error) {
-        console.log(error)
         console.error(error);
     }
 })();
@@ -103,6 +102,9 @@ client.on('interactionCreate', async (interaction) => {
         // Send the poll message using the Create Message API
         try {
             const channel = interaction.channel;  // Get the channel where the command was used
+
+            // Reply to the interaction immediately
+            await interaction.reply({ content: 'Creating the poll...', ephemeral: true });
 
             const msg = await channel.send({ content: pollMessage });  // Send the message to the channel
 
