@@ -36,16 +36,22 @@ const commands = [
             option => option
                 .setName('hour')
                 .setDescription('Duration of the poll in hours (default to 24 hours)')
+                .setMaxValue(24)
+                .setMinValue(0)
         )
         .addIntegerOption(
             option => option
             .setName('min')
             .setDescription('Duration of the poll in minutes (default to 0 minutes)')
+            .setMaxValue(60)
+            .setMinValue(0)
         )
         .addIntegerOption(
             option => option
             .setName('sec')
             .setDescription('Duration of the poll in seconds (default to 0 seconds)')
+            .setMaxValue(60)
+            .setMinValue(0)
         )
 ];
 
@@ -122,7 +128,7 @@ client.on('interactionCreate', async (interaction) => {
             const channel = interaction.channel;  // Get the channel where the command was used
 
             // Reply to the interaction immediately
-            await interaction.reply({ content: 'Creating the poll...', ephemeral: true });
+            await interaction.reply({ content: 'Creating the poll...' });
 
             const message = await channel.send({
                 poll: {
@@ -143,8 +149,6 @@ client.on('interactionCreate', async (interaction) => {
 
             setTimeout(async () => {
                 rest.post(`/channels/${channel.id}/polls/${message.id}/expire`);      
-                
-                console.log(`rest.get('/channels/${channel.id}/polls/${message.id}/answers/${ANSWER_ID.EN}');`)
 
                 const enAns = await rest.get(`/channels/${channel.id}/polls/${message.id}/answers/${ANSWER_ID.EN}`);
                 const jpAns = await rest.get(`/channels/${channel.id}/polls/${message.id}/answers/${ANSWER_ID.JP}`);
