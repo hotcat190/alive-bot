@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import { Client, GatewayIntentBits, Poll } from 'discord.js';
 import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v9';
+import { SlashCommandBuilder } from '@discordjs/builders';
 
 dotenv.config();
 
@@ -16,30 +17,25 @@ const client = new Client({
 
 // Register the /guess command
 const commands = [
-    {
-        name: 'guess',
-        description: 'Guess either "en" or "jp".',
-        options: [
-            {
-                name: 'choice',
-                type: 3, // STRING input
-                description: 'Your guess (en or jp)',
-                required: true,
-            },
-        ],
-    },
-    {
-        name: 'create-poll',
-        description: 'Create a poll for people to guess "en" or "jp".',
-        options: [
-            {
-                name: 'duration',
-                type: 3,
-                description: 'The poll duration',
-                required: true,
-            },
-        ],
-    },
+    new SlashCommandBuilder()
+        .setName('guess')
+        .setDescription('Guess the result of the game!')
+        .addStringOption(
+            option => option
+                .setName('choice')
+                .setDescription('Your guess (en or jp)')
+                .setRequired(true)
+        ),
+
+    new SlashCommandBuilder()
+        .setName('create-poll')
+        .setDescription('Create a poll for users to vote.')
+        .addIntegerOption(
+            option => option
+                .setName('duration')
+                .setDescription('Duration of the poll in seconds')
+                .setRequired(true)
+        ),
 ];
 
 const rest = new REST({ version: '9' }).setToken(process.env.TOKEN);
@@ -92,50 +88,51 @@ client.on('interactionCreate', async (interaction) => {
     
     // Handle the /create-poll (Guessing game) command
     if (commandName === 'create-poll') {
-        const question = interaction.options.getString('question');  // Get poll question
+        const duration = interaction.options.getInteger('duration');  // Get poll duration in seconds
+        const pollDuration = Math.max(duration, 10) * 1000;  // Ensure it's at least 10 seconds (in milliseconds)
+
+        const question = "en or jp";  // Fixed question for the guessing game
         const options = ['en', 'jp'];  // Set the options as 'en' and 'jp'
-    
+
         // Build the poll message content
         let pollMessage = `**${question}**\n\n`;
         options.forEach((option, index) => {
-          pollMessage += `${index + 1}. ${option}\n`;
+            pollMessage += `${index + 1}. ${option}\n`;
         });
-    
+
         // Send the poll message using the Create Message API
         try {
-          const channel = interaction.channel;  // Get the channel where the command was used
-    
-          const msg = await channel.send({ content: pollMessage });  // Send the message to the channel
-    
-          // Add reactions for 'en' and 'jp' options
-          const emojiArray = ['🇬🇧', '🇯🇵']; // Emojis for 'en' and 'jp'
-          await msg.react(emojiArray[0]);  // Reaction for 'en'
-          await msg.react(emojiArray[1]);  // Reaction for 'jp'
-    
-          // Set a timeout to close the poll after a certain time (e.g., 1 minute)
-          const pollDuration = 60000;  // 60,000 ms = 1 minute (adjust as needed)
-          setTimeout(async () => {
-            const enVotes = msg.reactions.cache.get(emojiArray[0])?.count - 1 || 0;  // Subtract 1 for the bot's own reaction
-            const jpVotes = msg.reactions.cache.get(emojiArray[1])?.count - 1 || 0;  // Subtract 1 for the bot's own reaction
-    
-            // Randomly select the result for the guessing game
-            const randomChoice = Math.random() < 0.5 ? 'en' : 'jp';
-    
-            // Send the result message (poll closure)
-            await interaction.followUp(`Poll closed! The correct answer was **${randomChoice}**.\n` +
-              `Results:\n` +
-              `🇬🇧 **en**: ${enVotes} votes\n` +
-              `🇯🇵 **jp**: ${jpVotes} votes`);
-    
-            // Optionally delete the poll message after sending results
-            await msg.delete();
-          }, pollDuration);
-    
+            const channel = interaction.channel;  // Get the channel where the command was used
+
+            const msg = await channel.send({ content: pollMessage });  // Send the message to the channel
+
+            // Add reactions for 'en' and 'jp' options
+            const emojiArray = ['🇬🇧', '🇯🇵']; // Emojis for 'en' and 'jp'
+            await msg.react(emojiArray[0]);  // Reaction for 'en'
+            await msg.react(emojiArray[1]);  // Reaction for 'jp'
+
+            // Set a timeout to close the poll after the user-specified time
+            setTimeout(async () => {
+                const enVotes = msg.reactions.cache.get(emojiArray[0])?.count - 1 || 0;  // Subtract 1 for the bot's own reaction
+                const jpVotes = msg.reactions.cache.get(emojiArray[1])?.count - 1 || 0;  // Subtract 1 for the bot's own reaction
+
+                // Randomly select the result for the guessing game
+                const randomChoice = Math.random() < 0.5 ? 'en' : 'jp';
+
+                // Send the result message (poll closure)
+                await interaction.followUp(`Poll closed! The correct answer was **${randomChoice}**.\n` +
+                `Results:\n` +
+                `🇬🇧 **en**: ${enVotes} votes\n` +
+                `🇯🇵 **jp**: ${jpVotes} votes`);
+
+                // Optionally delete the poll message after sending results
+                await msg.delete();
+            }, pollDuration);
         } catch (error) {
-          console.error('Error sending poll message:', error);
-          await interaction.reply('There was an error creating the poll!');
+            console.error('Error sending poll message:', error);
+            await interaction.reply('There was an error creating the poll!');
         }
-      }
+    }
 });
 
 client.login(process.env.TOKEN);
