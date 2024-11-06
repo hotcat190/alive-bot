@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 
 import { Client, GatewayIntentBits, Poll, PollAnswer } from 'discord.js';
 import { REST } from '@discordjs/rest';
-import { Routes } from 'discord-api-types/v9';
+import { Routes } from 'discord-api-types/v10';
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 dotenv.config();
@@ -55,7 +55,7 @@ const commands = [
         )
 ];
 
-const rest = new REST({ version: '9' }).setToken(process.env.TOKEN);
+const rest = new REST().setToken(process.env.TOKEN);
 
 console.log('Attempting to register slash commands...');
 (async () => {
@@ -148,11 +148,12 @@ client.on('interactionCreate', async (interaction) => {
             setTimeout(async () => {
                 rest.post(`/channels/${channel.id}/polls/${message.id}/expire`);      
 
+                // TODO: FIGURE OUT HOW THIS SHIT WORK
                 const enAns = await rest.get(`/channels/${channel.id}/polls/${message.id}/answers/${ANSWER_ID.EN}`);
                 const jpAns = await rest.get(`/channels/${channel.id}/polls/${message.id}/answers/${ANSWER_ID.JP}`);
 
-                console.log('en: ' + enAns.array);
-                console.log('jp: ' + jpAns.array);
+                console.log('en: ' + enAns);
+                console.log('jp: ' + jpAns);
 
                 // Randomly pick 'en' or 'jp' as the bot's choice
                 const botChoice = Math.random() < 0.5 ? 'en' : 'jp';
