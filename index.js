@@ -34,17 +34,17 @@ const commands = [
         )
         .addIntegerOption(
             option => option
-                .setName('duration-hour')
+                .setName('hour')
                 .setDescription('Duration of the poll in hours (default to 24 hours)')
         )
         .addIntegerOption(
             option => option
-            .setName('duration-min')
+            .setName('min')
             .setDescription('Duration of the poll in minutes (default to 0 minutes)')
         )
         .addIntegerOption(
             option => option
-            .setName('duration-sec')
+            .setName('sec')
             .setDescription('Duration of the poll in seconds (default to 0 seconds)')
         )
 ];
@@ -106,9 +106,9 @@ client.on('interactionCreate', async (interaction) => {
     
     // Handle the /en-or-jp (Guessing game) command
     if (commandName === 'en-or-jp') {
-        const durationHour = interaction.options.getInteger('duration-hour');  // Get poll duration in hours
-        const durationMin = interaction.options.getInteger('duration-min');  // Get poll duration in minutes
-        const durationSec = interaction.options.getInteger('duration-sec');  // Get poll duration in seconds
+        const durationHour = interaction.options.getInteger('hour');  // Get poll duration in hours
+        const durationMin = interaction.options.getInteger('min');  // Get poll duration in minutes
+        const durationSec = interaction.options.getInteger('sec');  // Get poll duration in seconds
 
         const pollDuration = (durationHour*3600 + durationMin*60 + durationSec)*1000; // Convert it to miliseconds
 
@@ -142,13 +142,14 @@ client.on('interactionCreate', async (interaction) => {
             });
 
             setTimeout(async () => {
-                rest.post(`/channels/${channel.id}/polls/${message.id}/expire`);
+                rest.post(`/channels/${channel.id}/polls/${message.id}/expire`);      
                 
+                console.log(`rest.get('/channels/${channel.id}/polls/${message.id}/answers/${ANSWER_ID.EN}');`)
 
                 const enAns = await rest.get(`/channels/${channel.id}/polls/${message.id}/answers/${ANSWER_ID.EN}`);
                 const jpAns = await rest.get(`/channels/${channel.id}/polls/${message.id}/answers/${ANSWER_ID.JP}`);
 
-                console.log('en: ' + enAns.body);
+                console.log('en: ' + enAns.ANSWER_ID);
                 console.log('jp: ' + jpAns.body);
 
                 // Randomly pick 'en' or 'jp' as the bot's choice
