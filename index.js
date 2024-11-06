@@ -33,7 +33,7 @@ const commands = [
         .addIntegerOption(
             option => option
                 .setName('duration')
-                .setDescription('Duration of the poll in seconds')
+                .setDescription('Duration of the poll in minutes')
                 .setRequired(true)
         ),
 ];
@@ -88,16 +88,7 @@ client.on('interactionCreate', async (interaction) => {
     // Handle the /en-or-jp (Guessing game) command
     if (commandName === 'en-or-jp') {
         const duration = interaction.options.getInteger('duration');  // Get poll duration in minutes
-        const pollDuration = duration/3600; // Convert it hours
-
-        const question = "en or jp";  // Fixed question for the guessing game
-        const options = ['en', 'jp'];  // Set the options as 'en' and 'jp'
-
-        // Build the poll message content
-        let pollMessage = `**${question}**\n\n`;
-        options.forEach((option, index) => {
-            pollMessage += `${index + 1}. ${option}\n`;
-        });
+        const pollDuration = duration*60*1000; // Convert it miliseconds
 
         // Send the poll message using the Create Message API
         try {
@@ -108,20 +99,17 @@ client.on('interactionCreate', async (interaction) => {
 
             const message = await channel.send({
                 poll: {
-                    question: {
-                        text: "en or jp"
-                    },
+                    question: { text: "en or jp" },
                     answers: [
-                        {text: "en"},
-                        {text: "jp"},
+                        { text: "en" },
+                        { text: "jp" },
                     ],
-                    duration: duration,
                 },
             });
 
             setTimeout(async () => {
                 rest.post("/channels/" + channel.id + "/polls/" + message.id + "/expire")
-            }, 10000)
+            }, pollDuration)
             
         } catch (error) {
             console.error('Error sending poll message:', error);
