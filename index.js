@@ -99,17 +99,15 @@ client.on('interactionCreate', async (interaction) => {
 
         // Compare the user's guess with the bot's choice
         if (userGuess === botChoice) {
-            await interaction.reply(
-                `You guessed correctly! The result was: **${botChoice}**.\n`
-                + ((botChoice === "en") ? enLink : jpLink),
-            );
+            await interaction.reply(`You guessed correctly! The result was: **${botChoice}**.`);
             
         } else {
-            await interaction.reply(
-                `You guessed wrong! The result was: **${botChoice}**.\n`
-                + ((botChoice === "en") ? enLink : jpLink),
-            );
+            await interaction.reply(`You guessed wrong! The result was: **${botChoice}**.`);
         }
+
+        await interaction.channel.send({
+            content: (botChoice === "en") ? enLink : jpLink,
+        })
     }
     
     // Handle the /en-or-jp (Guessing game) command
