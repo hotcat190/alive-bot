@@ -125,11 +125,11 @@ client.on('interactionCreate', async (interaction) => {
             const jpAns = await rest.get("/channels/" + channel.id + "/polls/" + message.id + "/answers/" + ANSWER_ID.JP);
 
             console.log('en: ');
-            enAns.array.forEach(user => {
+            enAns.forEach(user => {
                 console.log(user.username);
             });
             console.log('jp: ');
-            jpAns.array.forEach(user => {
+            jpAns.forEach(user => {
                 console.log(user.username);
             });
             
