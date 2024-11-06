@@ -89,6 +89,10 @@ client.on('interactionCreate', async (interaction) => {
     if (commandName === 'en-or-jp') {
         const duration = interaction.options.getInteger('duration');  // Get poll duration in minutes
         const pollDuration = duration*60*1000; // Convert it miliseconds
+        const ANSWER_ID = {
+            EN: 1,
+            JP: 2,
+        }
 
         // Send the poll message using the Create Message API
         try {
@@ -101,15 +105,27 @@ client.on('interactionCreate', async (interaction) => {
                 poll: {
                     question: { text: "en or jp" },
                     answers: [
-                        { text: "en" },
-                        { text: "jp" },
+                        { 
+                            id: ANSWER_ID.EN,
+                            text: "en" 
+                        },
+                        { 
+                            id: ANSWER_ID.JP,
+                            text: "jp" 
+                        },
                     ],
                 },
             });
 
             setTimeout(async () => {
-                rest.post("/channels/" + channel.id + "/polls/" + message.id + "/expire")
-            }, pollDuration)
+                rest.post("/channels/" + channel.id + "/polls/" + message.id + "/expire");
+            }, pollDuration);
+
+            const enAns = await rest.get("/channels/" + channel.id + "/polls/" + message.id + "/answers/" + ANSWER_ID.EN);
+            const jpAns = await rest.get("/channels/" + channel.id + "/polls/" + message.id + "/answers/" + ANSWER_ID.JP);
+
+            console.log('enAns: ' + enAns);
+            console.log('jpAns: ' + jpAns);
             
         } catch (error) {
             console.error('Error sending poll message:', error);
