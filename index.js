@@ -29,13 +29,24 @@ const commands = [
 
     new SlashCommandBuilder()
         .setName('en-or-jp')
-        .setDescription('Create a poll for users to vote.')
+        .setDescription(
+            'Create a poll for users to vote.\n'
+        )
         .addIntegerOption(
             option => option
-                .setName('duration')
-                .setDescription('Duration of the poll in seconds')
-                .setRequired(true)
-        ),
+                .setName('duration-hour')
+                .setDescription('Duration of the poll in hours (default to 24 hours)')
+        )
+        .addIntegerOption(
+            option => option
+            .setName('duration-min')
+            .setDescription('Duration of the poll in minutes (default to 0 minutes)')
+        )
+        .addIntegerOption(
+            option => option
+            .setName('duration-sec')
+            .setDescription('Duration of the poll in seconds (default to 0 seconds)')
+        )
 ];
 
 const rest = new REST({ version: '9' }).setToken(process.env.TOKEN);
@@ -95,8 +106,12 @@ client.on('interactionCreate', async (interaction) => {
     
     // Handle the /en-or-jp (Guessing game) command
     if (commandName === 'en-or-jp') {
-        const duration = interaction.options.getInteger('duration');  // Get poll duration in seconds
-        const pollDuration = duration*1000; // Convert it miliseconds
+        const durationHour = interaction.options.getInteger('duration-hour');  // Get poll duration in hours
+        const durationMin = interaction.options.getInteger('duration-min');  // Get poll duration in minutes
+        const durationSec = interaction.options.getInteger('duration-sec');  // Get poll duration in seconds
+
+        const pollDuration = (durationHour*3600 + durationMin*60 + durationSec)*1000; // Convert it to miliseconds
+
         const ANSWER_ID = {
             EN: 1,
             JP: 2,
