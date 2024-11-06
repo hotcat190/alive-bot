@@ -33,7 +33,7 @@ const commands = [
         .addIntegerOption(
             option => option
                 .setName('duration')
-                .setDescription('Duration of the poll in minutes')
+                .setDescription('Duration of the poll in seconds')
                 .setRequired(true)
         ),
 ];
@@ -95,8 +95,8 @@ client.on('interactionCreate', async (interaction) => {
     
     // Handle the /en-or-jp (Guessing game) command
     if (commandName === 'en-or-jp') {
-        const duration = interaction.options.getInteger('duration');  // Get poll duration in minutes
-        const pollDuration = duration*60*1000; // Convert it miliseconds
+        const duration = interaction.options.getInteger('duration');  // Get poll duration in seconds
+        const pollDuration = duration*1000; // Convert it miliseconds
         const ANSWER_ID = {
             EN: 1,
             JP: 2,
@@ -126,13 +126,22 @@ client.on('interactionCreate', async (interaction) => {
             });
 
             setTimeout(async () => {
-                rest.post("/channels/" + channel.id + "/polls/" + message.id + "/expire");
+                rest.post(`/channels/${channel.id}/polls/${message.id}/expire`);
+                
 
-                const enAns = await rest.get("/channels/" + channel.id + "/polls/" + message.id + "/answers/" + ANSWER_ID.EN);
-                const jpAns = await rest.get("/channels/" + channel.id + "/polls/" + message.id + "/answers/" + ANSWER_ID.JP);
+                const enAns = await rest.get(`/channels/${channel.id}polls/${message.id}answers/${ANSWER_ID.EN}`);
+                const jpAns = await rest.get(`/channels/${channel.id}polls/${message.id}answers/${ANSWER_ID.JP}`);
 
                 console.log('en: ' + enAns.body);
                 console.log('jp: ' + jpAns.body);
+
+                // Randomly pick 'en' or 'jp' as the bot's choice
+                const botChoice = Math.random() < 0.5 ? 'en' : 'jp';
+
+                await channel.send({
+                    content: `The result was: **${botChoice}**.\n` + ((botChoice === "en") ? enLink : jpLink),
+                });
+
             }, pollDuration);
             
         } catch (error) {
