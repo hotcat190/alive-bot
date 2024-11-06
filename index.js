@@ -95,7 +95,7 @@ client.on('interactionCreate', async (interaction) => {
         }
 
         // Randomly pick 'en' or 'jp' as the bot's choice
-        const botChoice = Math.random() < 0.5 ? 'en' : 'jp';
+        const botChoice = Math.random() < 0.5 ? ANSWER_ID.EN : ANSWER_ID.JP;
 
         // Compare the user's guess with the bot's choice
         if (userGuess === botChoice) {
@@ -106,7 +106,7 @@ client.on('interactionCreate', async (interaction) => {
         }
 
         await interaction.channel.send({
-            content: (botChoice === "en") ? enLink : jpLink,
+            content: (botChoice === ANSWER_ID.EN) ? enLink : jpLink,
         })
     }
     
@@ -146,25 +146,34 @@ client.on('interactionCreate', async (interaction) => {
             });
 
             setTimeout(async () => {
-                const result = rest.post(`/channels/${channel.id}/polls/${message.id}/expire`);      
+                rest.post(`/channels/${channel.id}/polls/${message.id}/expire`); 
+                     
+                // Randomly pick 'en' or 'jp' as the bot's choice
+                const botChoice = Math.random() < 0.5 ? ANSWER_ID.EN : ANSWER_ID.JP;
+
+                const users = [];
     
                 try {
-                    // TODO: FIGURE OUT HOW THIS SHIT WORK
-                    const enAns = await rest.get(`/channels/${channel.id}/polls/${message.id}/answers/${ANSWER_ID.EN}`);
-                    const jpAns = await rest.get(`/channels/${channel.id}/polls/${message.id}/answers/${ANSWER_ID.JP}`);
-                    
-                    console.log('en: ' + enAns.users[0].username);
-                    console.log('jp: ' + jpAns.users);
+                    users = await rest.get(`/channels/${channel.id}/polls/${message.id}/answers/${botChoice}`).users;
                 } catch (error) {
                     console.error('Error retrieving users list:', error);
-                }            
-    
-                // Randomly pick 'en' or 'jp' as the bot's choice
-                const botChoice = Math.random() < 0.5 ? 'en' : 'jp';
-    
+                }
+
                 await channel.send({
-                    content: `The result was: **${botChoice}**.\n` + ((botChoice === "en") ? enLink : jpLink),
+                    content: `The result was: **${botChoice}**.\n`
+                        + `Correct guessers: `
+                        + ((users) => {
+                            for (i = 0; i < users.length; i++) {
+                                if (i === users.length-1) {
+                                    return `${users[i].username}.`;
+                                }
+                                return `${users[i].username}, `
+                            }
+                        })
+                        + ((botChoice === ANSWER_ID.EN) ? enLink : jpLink),
                 });
+    
+                
     
             }, pollDuration);
         } catch (error) {
