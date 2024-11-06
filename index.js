@@ -153,7 +153,7 @@ client.on('interactionCreate', async (interaction) => {
                     const enAns = await rest.get(`/channels/${channel.id}/polls/${message.id}/answers/${ANSWER_ID.EN}`);
                     const jpAns = await rest.get(`/channels/${channel.id}/polls/${message.id}/answers/${ANSWER_ID.JP}`);
                     
-                    console.log('en: ' + Object.keys(enAns.users));
+                    console.log('en: ' + enAns.users[0].username);
                     console.log('jp: ' + jpAns.users);
                 } catch (error) {
                     console.error('Error retrieving users list:', error);
