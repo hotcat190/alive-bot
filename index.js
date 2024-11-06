@@ -32,11 +32,7 @@ const commands = [
 const rest = new REST({ version: '9' }).setToken(process.env.TOKEN);
 
 console.log('Attempting to register slash commands...');
-console.log('outside async Client ID:', process.env.CLIENT_ID);
-
 (async () => {
-    console.log('inside async Client ID:', process.env.CLIENT_ID);
-
     try {
         console.log('Started refreshing application (/) commands.');
 
@@ -49,7 +45,7 @@ console.log('outside async Client ID:', process.env.CLIENT_ID);
         console.log(error)
         console.error(error);
     }
-});
+})();
 
 client.once('ready', () => {
     console.log('Bot is online!');
