@@ -129,8 +129,8 @@ client.on('interactionCreate', async (interaction) => {
                 rest.post(`/channels/${channel.id}/polls/${message.id}/expire`);
                 
 
-                const enAns = await rest.get(`/channels/${channel.id}polls/${message.id}answers/${ANSWER_ID.EN}`);
-                const jpAns = await rest.get(`/channels/${channel.id}polls/${message.id}answers/${ANSWER_ID.JP}`);
+                const enAns = await rest.get(`/channels/${channel.id}/polls/${message.id}/answers/${ANSWER_ID.EN}`);
+                const jpAns = await rest.get(`/channels/${channel.id}/polls/${message.id}/answers/${ANSWER_ID.JP}`);
 
                 console.log('en: ' + enAns.body);
                 console.log('jp: ' + jpAns.body);
