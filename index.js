@@ -152,10 +152,11 @@ client.on('interactionCreate', async (interaction) => {
                     // TODO: FIGURE OUT HOW THIS SHIT WORK
                     const enAns = await rest.get(`/channels/${channel.id}/polls/${message.id}/answers/${ANSWER_ID.EN}`);
                     const jpAns = await rest.get(`/channels/${channel.id}/polls/${message.id}/answers/${ANSWER_ID.JP}`);
-                } catch (error) {
-                    console.error('Error retrieving users list:', error);
+                    
                     console.log('en: ' + JSON.parse(enAns));
                     console.log('jp: ' + JSON.parse(jpAns));
+                } catch (error) {
+                    console.error('Error retrieving users list:', error);
                 }            
     
                 // Randomly pick 'en' or 'jp' as the bot's choice
