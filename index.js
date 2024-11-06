@@ -35,7 +35,7 @@ const commands = [
         .addIntegerOption(
             option => option
                 .setName('hour')
-                .setDescription('Duration of the poll in hours (default to 24 hours)')
+                .setDescription('Duration of the poll in hours (default to 0 hours)')
                 .setMaxValue(24)
                 .setMinValue(0)
         )
