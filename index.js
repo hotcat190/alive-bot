@@ -106,7 +106,7 @@ client.on('interactionCreate', async (interaction) => {
             // Reply to the interaction immediately
             await interaction.reply({ content: 'Creating the poll...', ephemeral: true });
 
-            const poll = await channel.send({
+            const message = await channel.send({
                 poll: {
                     question: {
                         text: "en or jp"
@@ -118,6 +118,10 @@ client.on('interactionCreate', async (interaction) => {
                     duration: duration,
                 },
             });
+
+            setTimeout(async () => {
+                rest.post("/channels/${channel.id}/polls/${message.id}/expire")
+            }, 10000)
             
         } catch (error) {
             console.error('Error sending poll message:', error);
