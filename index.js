@@ -122,13 +122,10 @@ client.on('interactionCreate', async (interaction) => {
                 const randomChoice = Math.random() < 0.5 ? 'en' : 'jp';
 
                 // Send the result message (poll closure)
-                await interaction.followUp(`Poll closed! The correct answer was **${randomChoice}**.\n` +
+                await msg.followUp(`Poll closed! The correct answer was **${randomChoice}**.\n` +
                 `Results:\n` +
                 `🇬🇧 **en**: ${enVotes} votes\n` +
                 `🇯🇵 **jp**: ${jpVotes} votes`);
-
-                // Optionally delete the poll message after sending results
-                await msg.delete();
             }, pollDuration);
         } catch (error) {
             console.error('Error sending poll message:', error);
