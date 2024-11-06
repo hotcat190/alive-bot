@@ -154,7 +154,9 @@ client.on('interactionCreate', async (interaction) => {
                 var users = [];
     
                 try {
-                    users = await rest.get(`/channels/${channel.id}/polls/${message.id}/answers/${botChoice}`).users;
+                    const response = rest.get(`/channels/${channel.id}/polls/${message.id}/answers/${botChoice}`);
+                    console.log(Object.keys(response))
+                    users = response.users;
                     console.log(users);
                 } catch (error) {
                     console.error('Error retrieving users list:', error);
@@ -167,7 +169,8 @@ client.on('interactionCreate', async (interaction) => {
                     }
                     else correctGuessers += `${users[i].username}, `;
                 }                   
-
+                console.log(correctGuessers);
+                
                 await channel.send({
                     content: `The result was: **${botChoice}**.\n`
                         + `Correct guessers: ${correctGuessers}\n`
