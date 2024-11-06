@@ -100,7 +100,7 @@ client.on('interactionCreate', async (interaction) => {
         }
 
         // Randomly pick 'en' or 'jp' as the bot's choice
-        const botChoice = Math.random() < 0.5 ? ANSWER_ID.EN : ANSWER_ID.JP;
+        const botChoice = Math.random() < 0.5 ? 'en' : 'jp';
 
         // Compare the user's guess with the bot's choice
         if (userGuess === botChoice) {
@@ -111,7 +111,7 @@ client.on('interactionCreate', async (interaction) => {
         }
 
         await interaction.channel.send({
-            content: (botChoice === ANSWER_ID.EN) ? enLink : jpLink,
+            content: (botChoice === 'en') ? enLink : jpLink,
         })
     }
     
