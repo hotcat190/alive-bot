@@ -136,11 +136,11 @@ client.on('interactionCreate', async (interaction) => {
                     answers: [
                         { 
                             answer_id: ANSWER_ID.EN,
-                            text: "en",
+                            poll_media: {text: "en"},
                         },
                         { 
                             answer_id: ANSWER_ID.EN,
-                            text: "jp",
+                            poll_media: {text: "jp"},
                         },
                     ],
                     allow_multiselect: false,
@@ -153,8 +153,8 @@ client.on('interactionCreate', async (interaction) => {
                 const enAns = await rest.get(`/channels/${channel.id}/polls/${message.id}/answers/${ANSWER_ID.EN}`);
                 const jpAns = await rest.get(`/channels/${channel.id}/polls/${message.id}/answers/${ANSWER_ID.JP}`);
 
-                console.log('en: ' + enAns.ANSWER_ID);
-                console.log('jp: ' + jpAns.body);
+                console.log('en: ' + enAns.array);
+                console.log('jp: ' + jpAns.array);
 
                 // Randomly pick 'en' or 'jp' as the bot's choice
                 const botChoice = Math.random() < 0.5 ? 'en' : 'jp';
