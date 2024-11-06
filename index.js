@@ -124,7 +124,7 @@ client.on('interactionCreate', async (interaction) => {
         }
 
         // Send the poll message using the Create Message API
-        try {
+        try {                  
             const channel = interaction.channel;  // Get the channel where the command was used
 
             // Reply to the interaction immediately
@@ -144,34 +144,32 @@ client.on('interactionCreate', async (interaction) => {
                     allow_multiselect: false,
                 },
             });
+
+            setTimeout(async () => {
+                const result = rest.post(`/channels/${channel.id}/polls/${message.id}/expire`);      
+    
+                try {
+                    // TODO: FIGURE OUT HOW THIS SHIT WORK
+                    const enAns = await rest.get(`/channels/${channel.id}/polls/${message.id}/answers/${ANSWER_ID.EN}`);
+                    const jpAns = await rest.get(`/channels/${channel.id}/polls/${message.id}/answers/${ANSWER_ID.JP}`);
+                } catch (error) {
+                    console.error('Error retrieving users list:', error);
+                    console.log('en: ' + enAns);
+                    console.log('jp: ' + jpAns);
+                }            
+    
+                // Randomly pick 'en' or 'jp' as the bot's choice
+                const botChoice = Math.random() < 0.5 ? 'en' : 'jp';
+    
+                await channel.send({
+                    content: `The result was: **${botChoice}**.\n` + ((botChoice === "en") ? enLink : jpLink),
+                });
+    
+            }, pollDuration);
         } catch (error) {
             console.error('Error sending poll message:', error);
             await interaction.reply('There was an error creating the poll!');
         }
-
-        setTimeout(async () => {
-            const result = rest.post(`/channels/${channel.id}/polls/${message.id}/expire`);      
-
-            try {
-                // TODO: FIGURE OUT HOW THIS SHIT WORK
-                const enAns = await rest.get(`/channels/${channel.id}/polls/${message.id}/answers/${ANSWER_ID.EN}`);
-                const jpAns = await rest.get(`/channels/${channel.id}/polls/${message.id}/answers/${ANSWER_ID.JP}`);
-            } catch (error) {
-                console.error('Error retrieving users list:', error);
-                console.log('en: ' + enAns);
-                console.log('jp: ' + jpAns);
-            }            
-
-            // Randomly pick 'en' or 'jp' as the bot's choice
-            const botChoice = Math.random() < 0.5 ? 'en' : 'jp';
-
-            await channel.send({
-                content: `The result was: **${botChoice}**.\n` + ((botChoice === "en") ? enLink : jpLink),
-            });
-
-        }, pollDuration);
-            
-        
     }
 });
 
