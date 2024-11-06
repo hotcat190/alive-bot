@@ -1,4 +1,6 @@
 import { Client, GatewayIntentBits } from 'discord.js';
+import { REST } from '@discordjs/rest';
+import { Routes } from 'discord-api-types/v9';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -11,27 +13,64 @@ const client = new Client({
     ] 
 });
 
+// Register the /guess command
+const commands = [
+    {
+        name: 'guess',
+        description: 'Guess either "en" or "jp".',
+        options: [
+            {
+                name: 'choice',
+                type: 3, // STRING input
+                description: 'Your guess (en or jp)',
+                required: true,
+            },
+        ],
+    },
+];
+
+const rest = new REST({ version: '9' }).setToken(process.env.TOKEN);
+
+(async () => {
+    try {
+        console.log('Started refreshing application (/) commands.');
+
+        await rest.put(Routes.applicationCommands(process.env.CLIENT_ID), {
+            body: commands,
+        });
+
+        console.log('Successfully reloaded application (/) commands.');
+    } catch (error) {
+        console.error(error);
+    }
+});
+
 client.once('ready', () => {
     console.log('Bot is online!');
 });
 
-client.on('messageCreate', message => {
-    if (message.content.toLowerCase().startsWith('!guess')) {
-        const args = message.content.split(' ');
-        const userGuess = args[1];
+client.on('interactionCreate', async (interaction) => {
+    if (!interaction.isCommand()) return;
 
+    const { commandName, options } = interaction;
+
+    if (commandName === 'guess') {
+        const userGuess = options.getString('choice').toLowerCase();
+
+        // Check if the user's guess is valid
         if (userGuess !== 'en' && userGuess !== 'jp') {
-            message.reply('Please guess either "en" or "jp"!');
+            await interaction.reply('Invalid guess! Please choose either "en" or "jp".');
             return;
         }
 
-        const outcomes = ['en', 'jp'];
-        const botChoice = outcomes[Math.floor(Math.random() * outcomes.length)];
+        // Randomly pick 'en' or 'jp' as the bot's choice
+        const botChoice = Math.random() < 0.5 ? 'en' : 'jp';
 
+        // Compare the user's guess with the bot's choice
         if (userGuess === botChoice) {
-            message.reply(`Correct! It was "${botChoice}". 🎉`);
+            await interaction.reply(`You guessed correctly! The result was: **${botChoice}**.`);
         } else {
-            message.reply(`Sorry, it was actually "${botChoice}". Better luck next time!`);
+            await interaction.reply(`You guessed wrong! The result was: **${botChoice}**.`);
         }
     }
 });
