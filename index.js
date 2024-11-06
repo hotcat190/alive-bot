@@ -155,6 +155,7 @@ client.on('interactionCreate', async (interaction) => {
     
                 try {
                     users = await rest.get(`/channels/${channel.id}/polls/${message.id}/answers/${botChoice}`).users;
+                    console.log(users);
                 } catch (error) {
                     console.error('Error retrieving users list:', error);
                 }
@@ -164,7 +165,7 @@ client.on('interactionCreate', async (interaction) => {
                     if (i === users.length-1) {
                         correctGuessers += `${users[i].username}.`;
                     }
-                    else correctGuessers += `${users[i].username}, `
+                    else correctGuessers += `${users[i].username}, `;
                 }                   
 
                 await channel.send({
