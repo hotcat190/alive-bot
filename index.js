@@ -160,7 +160,7 @@ client.on('interactionCreate', async (interaction) => {
                 }
 
                 const correctGuessers = ""; 
-                for (i = 0; i < users.length; i++) {
+                for (var i = 0; i < users.length; i++) {
                     if (i === users.length-1) {
                         correctGuessers += `${users[i].username}.`;
                     }
