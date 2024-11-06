@@ -151,7 +151,7 @@ client.on('interactionCreate', async (interaction) => {
                 // Randomly pick 'en' or 'jp' as the bot's choice
                 const botChoice = Math.random() < 0.5 ? ANSWER_ID.EN : ANSWER_ID.JP;
 
-                const users = [];
+                var users = [];
     
                 try {
                     users = await rest.get(`/channels/${channel.id}/polls/${message.id}/answers/${botChoice}`).users;
