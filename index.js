@@ -159,17 +159,17 @@ client.on('interactionCreate', async (interaction) => {
                     console.error('Error retrieving users list:', error);
                 }
 
+                const correctGuessers = ""; 
+                for (i = 0; i < users.length; i++) {
+                    if (i === users.length-1) {
+                        correctGuessers += `${users[i].username}.`;
+                    }
+                    else correctGuessers += `${users[i].username}, `
+                }                   
+
                 await channel.send({
                     content: `The result was: **${botChoice}**.\n`
-                        + `Correct guessers: `
-                        + ((users) => {
-                            for (i = 0; i < users.length; i++) {
-                                if (i === users.length-1) {
-                                    return `${users[i].username}.`;
-                                }
-                                return `${users[i].username}, `
-                            }
-                        })
+                        + `Correct guessers: ${correctGuessers}\n`
                         + ((botChoice === ANSWER_ID.EN) ? enLink : jpLink),
                 });
     
