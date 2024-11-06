@@ -154,16 +154,13 @@ client.on('interactionCreate', async (interaction) => {
                 var users = [];
     
                 try {
-                    console.log(`/channels/${channel.id}/polls/${message.id}/answers/${botChoice}`);
                     const response = await rest.get(`/channels/${channel.id}/polls/${message.id}/answers/${botChoice}`);
-                    console.log(Object.keys(response))
                     users = response.users;
-                    console.log(users);
                 } catch (error) {
                     console.error('Error retrieving users list:', error);
                 }
                 
-                const correctGuessers = ""; 
+                var correctGuessers = ""; 
                 
                 if (users !== undefined) {
                     for (var i = 0; i < users.length; i++) {
@@ -177,7 +174,7 @@ client.on('interactionCreate', async (interaction) => {
 
                 await channel.send({
                     content: `The result was: **${botChoice}**.\n`
-                        + `Correct guessers: ${correctGuessers}\n`
+                        + ((correctGuessers === "") ? `No one got it right :jellycry:` : `Correct guessers: ${correctGuessers}\n`)
                         + ((botChoice === ANSWER_ID.EN) ? enLink : jpLink),
                 });
     
