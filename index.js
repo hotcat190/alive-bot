@@ -101,13 +101,13 @@ client.on('interactionCreate', async (interaction) => {
         if (userGuess === botChoice) {
             await interaction.reply(
                 `You guessed correctly! The result was: **${botChoice}**.\n`
-                + (botChoice === "en") ? enLink : jpLink,
+                + ((botChoice === "en") ? enLink : jpLink),
             );
             
         } else {
             await interaction.reply(
                 `You guessed wrong! The result was: **${botChoice}**.\n`
-                +(botChoice === "en") ? enLink : jpLink,
+                + ((botChoice === "en") ? enLink : jpLink),
             );
         }
     }
