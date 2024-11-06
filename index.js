@@ -88,7 +88,6 @@ client.on('interactionCreate', async (interaction) => {
     // Handle the /create-poll (Guessing game) command
     if (commandName === 'create-poll') {
         const duration = interaction.options.getInteger('duration');  // Get poll duration in seconds
-        const pollDuration = Math.max(duration, 10) * 1000;  // Ensure it's at least 10 seconds (in milliseconds)
 
         const question = "en or jp";  // Fixed question for the guessing game
         const options = ['en', 'jp'];  // Set the options as 'en' and 'jp'
@@ -139,8 +138,7 @@ client.on('interactionCreate', async (interaction) => {
                         {text: "en"},
                         {text: "jp"},
                     ],
-                    duration: pollDuration,
-
+                    duration: duration,
                 },
             });
             
