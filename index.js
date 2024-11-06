@@ -134,13 +134,11 @@ client.on('interactionCreate', async (interaction) => {
                 poll: {
                     question: { text: "en or jp" },
                     answers: [
-                        { 
-                            answer_id: ANSWER_ID.EN,
-                            poll_media: {text: "en"},
+                        {
+                            text: "en",
                         },
                         { 
-                            answer_id: ANSWER_ID.EN,
-                            poll_media: {text: "jp"},
+                            text: "jp",
                         },
                     ],
                     allow_multiselect: false,
