@@ -120,7 +120,7 @@ client.on('interactionCreate', async (interaction) => {
             });
 
             setTimeout(async () => {
-                rest.post("/channels/${channel.id}/polls/${message.id}/expire")
+                rest.post("/channels/" + channel.id + "/polls/" + message.id + "/expire")
             }, 10000)
             
         } catch (error) {
