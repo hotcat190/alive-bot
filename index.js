@@ -28,7 +28,7 @@ const commands = [
         ),
 
     new SlashCommandBuilder()
-        .setName('create-poll')
+        .setName('en-or-jp')
         .setDescription('Create a poll for users to vote.')
         .addIntegerOption(
             option => option
@@ -85,10 +85,10 @@ client.on('interactionCreate', async (interaction) => {
         }
     }
     
-    // Handle the /create-poll (Guessing game) command
-    if (commandName === 'create-poll') {
+    // Handle the /en-or-jp (Guessing game) command
+    if (commandName === 'en-or-jp') {
         const duration = interaction.options.getInteger('duration');  // Get poll duration in minutes
-        const pollDuration = duration/60; // Convert it hours
+        const pollDuration = duration/3600; // Convert it hours
 
         const question = "en or jp";  // Fixed question for the guessing game
         const options = ['en', 'jp'];  // Set the options as 'en' and 'jp'
@@ -105,30 +105,6 @@ client.on('interactionCreate', async (interaction) => {
 
             // Reply to the interaction immediately
             await interaction.reply({ content: 'Creating the poll...', ephemeral: true });
-
-            // const msg = await channel.send({ content: pollMessage });  // Send the message to the channel
-
-            // // Add reactions for 'en' and 'jp' options
-            // const emojiArray = ['🇬🇧', '🇯🇵']; // Emojis for 'en' and 'jp'
-            // await msg.react(emojiArray[0]);  // Reaction for 'en'
-            // await msg.react(emojiArray[1]);  // Reaction for 'jp'
-
-            // // Set a timeout to close the poll after the user-specified time
-            // setTimeout(async () => {
-            //     const enVotes = msg.reactions.cache.get(emojiArray[0])?.count - 1 || 0;  // Subtract 1 for the bot's own reaction
-            //     const jpVotes = msg.reactions.cache.get(emojiArray[1])?.count - 1 || 0;  // Subtract 1 for the bot's own reaction
-
-            //     // Randomly select the result for the guessing game
-            //     const randomChoice = Math.random() < 0.5 ? 'en' : 'jp';
-
-            //     // Send the result message (poll closure)
-            //     await msg.reply(
-            //         `Poll closed! The correct answer was **${randomChoice}**.\n` +
-            //         `Results:\n` +
-            //         `🇬🇧 **en**: ${enVotes} votes\n` +
-            //         `🇯🇵 **jp**: ${jpVotes} votes`
-            //     );
-            // }, pollDuration);
 
             const poll = await channel.send({
                 poll: {
