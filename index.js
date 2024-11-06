@@ -124,14 +124,8 @@ client.on('interactionCreate', async (interaction) => {
             const enAns = await rest.get("/channels/" + channel.id + "/polls/" + message.id + "/answers/" + ANSWER_ID.EN);
             const jpAns = await rest.get("/channels/" + channel.id + "/polls/" + message.id + "/answers/" + ANSWER_ID.JP);
 
-            console.log('en: ');
-            enAns.forEach(user => {
-                console.log(user.username);
-            });
-            console.log('jp: ');
-            jpAns.forEach(user => {
-                console.log(user.username);
-            });
+            console.log('en: ' + enAns.body);
+            console.log('jp: ' + jpAns.body);
             
         } catch (error) {
             console.error('Error sending poll message:', error);
