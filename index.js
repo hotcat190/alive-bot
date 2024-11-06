@@ -149,12 +149,13 @@ client.on('interactionCreate', async (interaction) => {
                 rest.post(`/channels/${channel.id}/polls/${message.id}/expire`); 
                      
                 // Randomly pick 'en' or 'jp' as the bot's choice
-                const botChoice = Math.random() < 0.5 ? ANSWER_ID.EN : ANSWER_ID.JP;
+                const botChoice = Math.random() < 0.5 ? 'en' : 'jp';                
 
                 var users = [];
     
                 try {
-                    const response = await rest.get(`/channels/${channel.id}/polls/${message.id}/answers/${botChoice}`);
+                    const choiceId = (botChoice == 'en') ? ANSWER_ID.EN : ANSWER_ID.JP;
+                    const response = await rest.get(`/channels/${channel.id}/polls/${message.id}/answers/${choiceId}`);
                     users = response.users;
                 } catch (error) {
                     console.error('Error retrieving users list:', error);
@@ -174,8 +175,8 @@ client.on('interactionCreate', async (interaction) => {
 
                 await channel.send({
                     content: `The result was: **${botChoice}**.\n`
-                        + ((correctGuessers === "") ? `No one got it right :jellycry:` : `Correct guessers: ${correctGuessers}\n`)
-                        + ((botChoice === ANSWER_ID.EN) ? enLink : jpLink),
+                        + ((correctGuessers === "") ? `No one got it right :jellycry:` : `Correct guessers: ${correctGuessers}`) + '\n'
+                        + ((botChoice === 'en') ? enLink : jpLink),
                 });
     
             }, pollDuration);
