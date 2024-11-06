@@ -79,6 +79,11 @@ client.once('ready', () => {
 const enLink = "https://www.youtube.com/watch?v=TNaZqNzmhmI";
 const jpLink = "https://www.youtube.com/watch?v=qBLpyQ85q1o";
 
+const ANSWER_ID = {
+    EN: 1,
+    JP: 2,
+}
+
 client.on('interactionCreate', async (interaction) => {
     if (!interaction.isCommand()) return;
 
@@ -116,12 +121,7 @@ client.on('interactionCreate', async (interaction) => {
         const durationMin = interaction.options.getInteger('min');  // Get poll duration in minutes
         const durationSec = interaction.options.getInteger('sec');  // Get poll duration in seconds
 
-        const pollDuration = (durationHour*3600 + durationMin*60 + durationSec)*1000; // Convert it to miliseconds
-
-        const ANSWER_ID = {
-            EN: 1,
-            JP: 2,
-        }
+        const pollDuration = (durationHour*3600 + durationMin*60 + durationSec)*1000; // Convert it to miliseconds       
 
         // Send the poll message using the Create Message API
         try {                  
