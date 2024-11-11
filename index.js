@@ -5,6 +5,8 @@ import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v10';
 import { SlashCommandBuilder } from '@discordjs/builders';
 
+import { enLink, jpLink, ANSWER_ID } from './constants.js';
+
 dotenv.config();
 
 const client = new Client({ 
@@ -75,14 +77,6 @@ console.log('Attempting to register slash commands...');
 client.once('ready', () => {
     console.log('Bot is online!');
 });
-
-const enLink = "https://www.youtube.com/watch?v=TNaZqNzmhmI";
-const jpLink = "https://www.youtube.com/watch?v=qBLpyQ85q1o";
-
-const ANSWER_ID = {
-    EN: 1,
-    JP: 2,
-}
 
 client.on('interactionCreate', async (interaction) => {
     if (!interaction.isCommand()) return;
