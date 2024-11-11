@@ -58,9 +58,9 @@ const commands = [
         .setDescription('Schedule a poll to be posted at a specific date and repeated at set intervals.')
         .addStringOption(option => option
             .setName('date')
-            .setDescription('Date for the first poll (YYYY-MM-DD HH:MM format)')
+            .setDescription('Date for the first poll (YYYY-MM-DD HH:MM) in GMT+0')
             .setRequired(true))
-        .addStringOption(option => option
+        .addIntegerOption(option => option
             .setName('poll-duration')
             .setDescription('Poll duration in hours')
             .setRequired(true)
@@ -156,6 +156,11 @@ client.on('interactionCreate', async (interaction) => {
 
     // Handle the /schedule-poll command
     if (commandName === 'schedule-poll') {
+        if (pollIntervalId) {
+            await interaction.reply('A poll is already scheduled. Please wait until it completes or use /stop-ongoing-schedule to cancel it.');
+            return;
+        }
+
         const startDate = options.getString('date');
         const pollDuration = options.getString('poll-duration')
         // const intervalHours = options.getInteger('interval');
