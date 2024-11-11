@@ -6,6 +6,7 @@ import { Routes } from 'discord-api-types/v10';
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 import { enLink, jpLink, ANSWER_ID } from './constants.js';
+import createPoll from './create-poll.js';
 
 dotenv.config();
 
@@ -145,56 +146,8 @@ client.on('interactionCreate', async (interaction) => {
             // Reply to the interaction immediately
             await interaction.reply({ content: 'Creating the poll...' });
 
-            const message = await channel.send({
-                poll: {
-                    question: { text: "en or jp" },
-                    answers: [
-                        {
-                            text: "en",
-                        },
-                        { 
-                            text: "jp",
-                        },
-                    ],
-                    allow_multiselect: false,
-                },
-            });
-
-            setTimeout(async () => {
-                rest.post(`/channels/${channel.id}/polls/${message.id}/expire`); 
-                     
-                // Randomly pick 'en' or 'jp' as the bot's choice
-                const botChoice = Math.random() < 0.5 ? 'en' : 'jp';                
-
-                var users = [];
-    
-                try {
-                    const choiceId = (botChoice == 'en') ? ANSWER_ID.EN : ANSWER_ID.JP;
-                    const response = await rest.get(`/channels/${channel.id}/polls/${message.id}/answers/${choiceId}`);
-                    users = response.users;
-                } catch (error) {
-                    console.error('Error retrieving users list:', error);
-                }
-                
-                var correctGuessers = ""; 
-                
-                if (users !== undefined) {
-                    for (var i = 0; i < users.length; i++) {
-                        if (i === users.length-1) {
-                            correctGuessers += `${users[i].username}.`;
-                        }
-                        else correctGuessers += `${users[i].username}, `;
-                    }                   
-                    console.log(correctGuessers);
-                }
-
-                await channel.send({
-                    content: `The result was: **${botChoice}**.\n`
-                        + ((correctGuessers === "") ? `No one got it right :jellycry:` : `Correct guessers: ${correctGuessers}`) + '\n'
-                        + ((botChoice === 'en') ? enLink : jpLink),
-                });
-    
-            }, pollDuration);
+            // Create poll using Create Message API
+            await createPoll(channel, pollDuration, rest);
         } catch (error) {
             console.error('Error sending poll message:', error);
             await interaction.reply('There was an error creating the poll!');
@@ -214,29 +167,11 @@ client.on('interactionCreate', async (interaction) => {
     
         // Schedule the first poll
         const schedulePoll = async () => {
-            const pollMessage = await interaction.channel.send({
-                content: 'Poll: **en or jp**',
-                components: [{
-                    type: 1,
-                    components: [
-                        { type: 2, style: 1, label: 'en', custom_id: 'poll_en' },
-                        { type: 2, style: 1, label: 'jp', custom_id: 'poll_jp' }
-                    ]
-                }]
-            });
+            await createPoll(interaction.channel, pollDuration, rest);
     
             // Set the poll to repeat at the given interval
             pollIntervalId = setInterval(async () => {
-                await pollMessage.channel.send({
-                    content: 'Poll: **en or jp**',
-                    components: [{
-                        type: 1,
-                        components: [
-                            { type: 2, style: 1, label: 'en', custom_id: 'poll_en' },
-                            { type: 2, style: 1, label: 'jp', custom_id: 'poll_jp' }
-                        ]
-                    }]
-                });
+                await createPoll(interaction.channel, pollDuration, rest);
             }, intervalMs);
         };
     
