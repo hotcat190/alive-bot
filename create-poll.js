@@ -13,6 +13,8 @@ async function createPoll(channel, pollDuration, rest) {
             },
         });
 
+        const HOUR_TO_MS = 60 * 60 * 1000;
+
         setTimeout(async () => {
             rest.post(`/channels/${channel.id}/polls/${message.id}/expire`);
 
@@ -33,7 +35,7 @@ async function createPoll(channel, pollDuration, rest) {
                 content: `The result was: **${botChoice}**.\nCorrect guessers :jellythumbsup:: ${correctGuessers}\n${botChoice === 'en' ? enLink : jpLink}`,
             });
 
-        }, pollDuration);
+        }, pollDuration * HOUR_TO_MS);
 
     } catch (error) {
         console.error('Error sending poll message:', error);
