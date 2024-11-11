@@ -2,9 +2,10 @@ import { enLink, jpLink, ANSWER_ID } from './constants.js';
 
 async function createPoll(channel, pollDuration, rest) {
     try {
-        await channel.send({
+        // TODO: send lead-in video
+        // await channel.send({
 
-        });
+        // });
 
         const message = await channel.send({
             poll: {
