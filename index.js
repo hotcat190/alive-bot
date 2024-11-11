@@ -69,6 +69,11 @@ const commands = [
             .setDescription('Interval between polls in minutes')
             .setRequired(true)
         ),
+
+    new SlashCommandBuilder()
+        .setName('stop-ongoing-schedule')
+        .setDescription('Stop the ongoing scheduled polls.'),
+    
 ];
 
 const rest = new REST().setToken(process.env.TOKEN);
@@ -245,6 +250,19 @@ client.on('interactionCreate', async (interaction) => {
             await interaction.reply('The specified date is in the past.');
         }
     }
+
+
+    // Handle /stop-ongoing-schedule
+    if (commandName === 'stop-ongoing-schedule') {
+        if (pollIntervalId) {
+            clearInterval(pollIntervalId);
+            pollIntervalId = null;
+            await interaction.reply('Ongoing scheduled poll has been stopped.');
+        } else {
+            await interaction.reply('No scheduled poll is currently running.');
+        }
+    }
+    
     
 });
 
