@@ -22,11 +22,10 @@ const commands = [
     new SlashCommandBuilder()
         .setName('guess')
         .setDescription('Guess the result of the game!')
-        .addStringOption(
-            option => option
-                .setName('choice')
-                .setDescription('Your guess (en or jp)')
-                .setRequired(true)
+        .addStringOption(option => option
+            .setName('choice')
+            .setDescription('Your guess (en or jp)')
+            .setRequired(true)
         ),
 
     new SlashCommandBuilder()
@@ -34,22 +33,19 @@ const commands = [
         .setDescription(
             'Create a poll for users to vote.\n'
         )
-        .addIntegerOption(
-            option => option
-                .setName('hour')
-                .setDescription('Duration of the poll in hours (default to 0 hours)')
-                .setMaxValue(24)
-                .setMinValue(0)
+        .addIntegerOption(option => option
+            .setName('hour')
+            .setDescription('Duration of the poll in hours (default to 0 hours)')
+            .setMaxValue(24)
+            .setMinValue(0)
         )
-        .addIntegerOption(
-            option => option
+        .addIntegerOption(option => option
             .setName('min')
             .setDescription('Duration of the poll in minutes (default to 0 minutes)')
             .setMaxValue(60)
             .setMinValue(0)
         )
-        .addIntegerOption(
-            option => option
+        .addIntegerOption(option => option
             .setName('sec')
             .setDescription('Duration of the poll in seconds (default to 0 seconds)')
             .setMaxValue(60)
@@ -66,7 +62,8 @@ const commands = [
         .addIntegerOption(option => 
             option.setName('interval')
                   .setDescription('Interval between polls in hours')
-                  .setRequired(true)),
+                  .setRequired(true)
+        ),
 ];
 
 const rest = new REST().setToken(process.env.TOKEN);
