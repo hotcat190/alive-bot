@@ -101,7 +101,6 @@ client.once('ready', () => {
 
 let pollIntervalId = null;
 let poll = null;
-let interval = null;
 
 client.on('interactionCreate', async (interaction) => {
     if (!interaction.isCommand()) return;
@@ -165,9 +164,10 @@ client.on('interactionCreate', async (interaction) => {
         }
 
         const startDate = options.getString('date');
-        const pollDuration = options.getInteger('poll-duration') * HOURS_TO_MS
-        const intervalMs = options.getInteger('interval') * DAYS_TO_MS;
-        interval = options.getInteger('interval');
+        const pollDurationHour = options.getInteger('poll-duration')
+        const pollDuration = pollDurationHour * HOURS_TO_MS
+        const intervalDays = options.getInteger('interval');
+        const intervalMs = intervalDays * DAYS_TO_MS;
         
         // Parse date and interval
         const startDateTime = new Date(startDate);
@@ -187,7 +187,7 @@ client.on('interactionCreate', async (interaction) => {
         console.log(timeUntilFirstPoll);
         if (timeUntilFirstPoll > 0) {
             setTimeout(schedulePoll, timeUntilFirstPoll);
-            await interaction.reply(`Poll has been scheduled at ${startDateTime} for ${pollDuration} hour(s), repeating every ${interval} day(s).`);
+            await interaction.reply(`Poll has been scheduled at <t:${startDateTime.valueOf()} for ${pollDurationHour} hour(s), repeating every ${intervalDays} day(s).`);
         } else {
             await interaction.reply('The specified date is in the past.');
         }
