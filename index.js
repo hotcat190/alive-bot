@@ -100,6 +100,7 @@ client.once('ready', () => {
 });
 
 let pollIntervalId = null;
+let poll = null;
 
 client.on('interactionCreate', async (interaction) => {
     if (!interaction.isCommand()) return;
@@ -174,11 +175,11 @@ client.on('interactionCreate', async (interaction) => {
     
         // Schedule the first poll
         const schedulePoll = async () => {
-            await createPoll(interaction.channel, pollDuration, rest);
+            poll = await createPoll(interaction.channel, pollDuration, rest);
     
             // Set the poll to repeat at the given interval
             pollIntervalId = setInterval(async () => {
-                await createPoll(interaction.channel, pollDuration, rest);
+                poll = await createPoll(interaction.channel, pollDuration, rest);
             }, intervalMs);
         };
     
@@ -198,6 +199,7 @@ client.on('interactionCreate', async (interaction) => {
         if (pollIntervalId) {
             clearInterval(pollIntervalId);
             pollIntervalId = null;
+            await rest.post(`/channels/${interaction.channel.id}/polls/${poll.id}/expire`);
             await interaction.reply('Ongoing scheduled poll has been stopped.');
         } else {
             await interaction.reply('No scheduled poll is currently running.');

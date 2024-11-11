@@ -2,6 +2,10 @@ import { enLink, jpLink, ANSWER_ID } from './constants.js';
 
 async function createPoll(channel, pollDuration, rest) {
     try {
+        await channel.send({
+
+        });
+
         const message = await channel.send({
             poll: {
                 question: { text: "en or jp" },
@@ -14,7 +18,7 @@ async function createPoll(channel, pollDuration, rest) {
         });
 
         setTimeout(async () => {
-            rest.post(`/channels/${channel.id}/polls/${message.id}/expire`);
+            await rest.post(`/channels/${channel.id}/polls/${message.id}/expire`);
 
             const botChoice = Math.random() < 0.5 ? 'en' : 'jp';
             const choiceId = botChoice === 'en' ? ANSWER_ID.EN : ANSWER_ID.JP;
@@ -27,13 +31,27 @@ async function createPoll(channel, pollDuration, rest) {
                 console.error('Error retrieving users list:', error);
             }
 
-            const correctGuessers = users.map(user => user.username).join(', ') || 'No one got it right :jellycry:';
+            var correctGuessers = ""; 
+                
+            if (users !== undefined) {
+                for (var i = 0; i < users.length; i++) {
+                    if (i === users.length-1) {
+                        correctGuessers += `${users[i].username}.`;
+                    }
+                    else correctGuessers += `${users[i].username}, `;
+                }                   
+                console.log(correctGuessers);
+            }
 
             await channel.send({
-                content: `The result was: **${botChoice}**.\nCorrect guessers :jellythumbsup:: ${correctGuessers}\n${botChoice === 'en' ? enLink : jpLink}`,
+                content: `The result was: **${botChoice}**.\n`
+                    + ((correctGuessers === "") ? `No one got it right :jellycry:` : `Correct guessers: ${correctGuessers}`) + '\n'
+                    + ((botChoice === 'en') ? enLink : jpLink),
             });
 
         }, pollDuration);
+
+        return message;
 
     } catch (error) {
         console.error('Error sending poll message:', error);
