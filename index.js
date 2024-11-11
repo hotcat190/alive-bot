@@ -162,7 +162,7 @@ client.on('interactionCreate', async (interaction) => {
         }
 
         const startDate = options.getString('date');
-        const pollDuration = options.getString('poll-duration')
+        const pollDuration = options.getInteger('poll-duration')
         // const intervalHours = options.getInteger('interval');
         const DAYS_TO_MS = 24 * 60 * 60 * 1000
         const intervalMs = options.getInteger('interval') * DAYS_TO_MS;
