@@ -166,7 +166,7 @@ client.on('interactionCreate', async (interaction) => {
         const pollDuration = options.getInteger('poll-duration')
         // const intervalHours = options.getInteger('interval');
         
-        const intervalMs = options.getInteger('interval') * SECONDS_TO_MS;
+        const intervalMs = options.getInteger('interval') * DAYS_TO_MS;
     
         // Parse date and interval
         const startDateTime = new Date(startDate);
