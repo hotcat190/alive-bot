@@ -92,6 +92,8 @@ client.once('ready', () => {
     console.log('Bot is online!');
 });
 
+let pollIntervalId = null;
+
 client.on('interactionCreate', async (interaction) => {
     if (!interaction.isCommand()) return;
 
@@ -199,7 +201,7 @@ client.on('interactionCreate', async (interaction) => {
         const startDate = options.getString('date');
         const pollDuration = options.getString('poll-duration')
         // const intervalHours = options.getInteger('interval');
-        const intervalMs = options.getInteger('interval');
+        const intervalMs = options.getInteger('interval') * 60 * 1000;
     
         // Parse date and interval
         const startDateTime = new Date(startDate);
@@ -219,7 +221,7 @@ client.on('interactionCreate', async (interaction) => {
             });
     
             // Set the poll to repeat at the given interval
-            setInterval(async () => {
+            pollIntervalId = setInterval(async () => {
                 await pollMessage.channel.send({
                     content: 'Poll: **en or jp**',
                     components: [{
