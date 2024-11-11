@@ -30,7 +30,7 @@ async function createPoll(channel, pollDuration, rest) {
             const correctGuessers = users.map(user => user.username).join(', ') || 'No one got it right :jellycry:';
 
             await channel.send({
-                content: `The result was: **${botChoice}**.\nCorrect guessers: ${correctGuessers}\n${botChoice === 'en' ? enLink : jpLink}`,
+                content: `The result was: **${botChoice}**.\nCorrect guessers :jellythumbsup:: ${correctGuessers}\n${botChoice === 'en' ? enLink : jpLink}`,
             });
 
         }, pollDuration);
