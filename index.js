@@ -67,7 +67,7 @@ const commands = [
         )
         .addIntegerOption(option => option
             .setName('interval')
-            .setDescription('Interval between polls in minutes')
+            .setDescription('Interval between polls in days')
             .setRequired(true)
         ),
 
@@ -164,7 +164,8 @@ client.on('interactionCreate', async (interaction) => {
         const startDate = options.getString('date');
         const pollDuration = options.getString('poll-duration')
         // const intervalHours = options.getInteger('interval');
-        const intervalMs = options.getInteger('interval') * 60 * 1000;
+        const DAYS_TO_MS = 24 * 60 * 60 * 1000
+        const intervalMs = options.getInteger('interval') * DAYS_TO_MS;
     
         // Parse date and interval
         const startDateTime = new Date(startDate);
@@ -191,7 +192,6 @@ client.on('interactionCreate', async (interaction) => {
         }
     }
 
-
     // Handle /stop-ongoing-schedule
     if (commandName === 'stop-ongoing-schedule') {
         if (pollIntervalId) {
@@ -202,8 +202,6 @@ client.on('interactionCreate', async (interaction) => {
             await interaction.reply('No scheduled poll is currently running.');
         }
     }
-    
-    
 });
 
 client.login(process.env.TOKEN);
