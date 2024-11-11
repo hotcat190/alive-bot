@@ -188,7 +188,7 @@ client.on('interactionCreate', async (interaction) => {
         console.log(timeUntilFirstPoll);
         if (timeUntilFirstPoll > 0) {
             setTimeout(schedulePoll, timeUntilFirstPoll);
-            await interaction.reply('Poll has been scheduled.');
+            await interaction.reply(`Poll has been scheduled at. <t:${startDateTime}>`);
         } else {
             await interaction.reply('The specified date is in the past.');
         }
