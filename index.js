@@ -54,7 +54,19 @@ const commands = [
             .setDescription('Duration of the poll in seconds (default to 0 seconds)')
             .setMaxValue(60)
             .setMinValue(0)
-        )
+        ),
+
+    new SlashCommandBuilder()
+        .setName('schedule-poll')
+        .setDescription('Schedule a poll to be posted at a specific date and repeated at set intervals.')
+        .addStringOption(option => 
+            option.setName('date')
+                  .setDescription('Date for the first poll (YYYY-MM-DD HH:MM format)')
+                  .setRequired(true))
+        .addIntegerOption(option => 
+            option.setName('interval')
+                  .setDescription('Interval between polls in hours')
+                  .setRequired(true)),
 ];
 
 const rest = new REST().setToken(process.env.TOKEN);
@@ -179,6 +191,54 @@ client.on('interactionCreate', async (interaction) => {
             await interaction.reply('There was an error creating the poll!');
         }
     }
+
+    // Handle the /schedule-poll command
+    if (commandName === 'schedule-poll') {
+        const startDate = options.getString('date');
+        const intervalHours = options.getInteger('interval');
+    
+        // Parse date and interval
+        const startDateTime = new Date(startDate);
+        const intervalMs = intervalHours * 60 * 60 * 1000;
+    
+        // Schedule the first poll
+        const schedulePoll = async () => {
+            const pollMessage = await interaction.channel.send({
+                content: 'Poll: **en or jp**',
+                components: [{
+                    type: 1,
+                    components: [
+                        { type: 2, style: 1, label: 'en', custom_id: 'poll_en' },
+                        { type: 2, style: 1, label: 'jp', custom_id: 'poll_jp' }
+                    ]
+                }]
+            });
+    
+            // Set the poll to repeat at the given interval
+            setInterval(async () => {
+                await pollMessage.channel.send({
+                    content: 'Poll: **en or jp**',
+                    components: [{
+                        type: 1,
+                        components: [
+                            { type: 2, style: 1, label: 'en', custom_id: 'poll_en' },
+                            { type: 2, style: 1, label: 'jp', custom_id: 'poll_jp' }
+                        ]
+                    }]
+                });
+            }, intervalMs);
+        };
+    
+        // Calculate time until first poll
+        const timeUntilFirstPoll = startDateTime.getTime() - Date.now();
+        if (timeUntilFirstPoll > 0) {
+            setTimeout(schedulePoll, timeUntilFirstPoll);
+            await interaction.reply('Poll has been scheduled.');
+        } else {
+            await interaction.reply('The specified date is in the past.');
+        }
+    }
+    
 });
 
 client.login(process.env.TOKEN);
