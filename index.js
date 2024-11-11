@@ -55,14 +55,19 @@ const commands = [
     new SlashCommandBuilder()
         .setName('schedule-poll')
         .setDescription('Schedule a poll to be posted at a specific date and repeated at set intervals.')
-        .addStringOption(option => 
-            option.setName('date')
-                  .setDescription('Date for the first poll (YYYY-MM-DD HH:MM format)')
-                  .setRequired(true))
-        .addIntegerOption(option => 
-            option.setName('interval')
-                  .setDescription('Interval between polls in ms')
-                  .setRequired(true)
+        .addStringOption(option => option
+            .setName('date')
+            .setDescription('Date for the first poll (YYYY-MM-DD HH:MM format)')
+            .setRequired(true))
+        .addStringOption(option => option
+            .setName('poll-duration')
+            .setDescription('Poll duration in hours')
+            .setRequired(true)
+        )
+        .addIntegerOption(option => option
+            .setName('interval')
+            .setDescription('Interval between polls in minutes')
+            .setRequired(true)
         ),
 ];
 
@@ -192,6 +197,7 @@ client.on('interactionCreate', async (interaction) => {
     // Handle the /schedule-poll command
     if (commandName === 'schedule-poll') {
         const startDate = options.getString('date');
+        const pollDuration = options.getString('poll-duration')
         // const intervalHours = options.getInteger('interval');
         const intervalMs = options.getInteger('interval');
     
@@ -229,6 +235,7 @@ client.on('interactionCreate', async (interaction) => {
     
         // Calculate time until first poll
         const timeUntilFirstPoll = startDateTime.getTime() - Date.now();
+        console.log(timeUntilFirstPoll);
         if (timeUntilFirstPoll > 0) {
             setTimeout(schedulePoll, timeUntilFirstPoll);
             await interaction.reply('Poll has been scheduled.');
