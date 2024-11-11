@@ -61,7 +61,7 @@ const commands = [
                   .setRequired(true))
         .addIntegerOption(option => 
             option.setName('interval')
-                  .setDescription('Interval between polls in hours')
+                  .setDescription('Interval between polls in ms')
                   .setRequired(true)
         ),
 ];
@@ -192,11 +192,12 @@ client.on('interactionCreate', async (interaction) => {
     // Handle the /schedule-poll command
     if (commandName === 'schedule-poll') {
         const startDate = options.getString('date');
-        const intervalHours = options.getInteger('interval');
+        // const intervalHours = options.getInteger('interval');
+        const intervalMs = options.getInteger('interval');
     
         // Parse date and interval
         const startDateTime = new Date(startDate);
-        const intervalMs = intervalHours * 60 * 60 * 1000;
+        // const intervalMs = intervalHours * 60 * 60 * 1000;
     
         // Schedule the first poll
         const schedulePoll = async () => {
