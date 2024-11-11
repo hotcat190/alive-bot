@@ -1,4 +1,4 @@
-import { enLink, jpLink, ANSWER_ID } from './constants.js';
+import { enLink, jpLink, ANSWER_ID, HOURS_TO_MS } from './constants.js';
 
 async function createPoll(channel, pollDuration, rest) {
     try {
@@ -12,8 +12,6 @@ async function createPoll(channel, pollDuration, rest) {
                 allow_multiselect: false,
             },
         });
-
-        const HOUR_TO_MS = 60 * 60 * 1000;
 
         setTimeout(async () => {
             rest.post(`/channels/${channel.id}/polls/${message.id}/expire`);
@@ -35,7 +33,7 @@ async function createPoll(channel, pollDuration, rest) {
                 content: `The result was: **${botChoice}**.\nCorrect guessers :jellythumbsup:: ${correctGuessers}\n${botChoice === 'en' ? enLink : jpLink}`,
             });
 
-        }, pollDuration * HOUR_TO_MS);
+        }, pollDuration * HOURS_TO_MS);
 
     } catch (error) {
         console.error('Error sending poll message:', error);

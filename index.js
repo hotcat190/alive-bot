@@ -6,6 +6,7 @@ import { Routes } from 'discord-api-types/v10';
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 import { enLink, jpLink, ANSWER_ID } from './constants.js';
+import { DAYS_TO_MS, HOURS_TO_MS, MINUTES_TO_MS, SECONDS_TO_MS } from './constants.js';
 import createPoll from './create-poll.js';
 
 dotenv.config();
@@ -164,8 +165,8 @@ client.on('interactionCreate', async (interaction) => {
         const startDate = options.getString('date');
         const pollDuration = options.getInteger('poll-duration')
         // const intervalHours = options.getInteger('interval');
-        const DAYS_TO_MS = 24 * 60 * 60 * 1000
-        const intervalMs = options.getInteger('interval') * DAYS_TO_MS;
+        
+        const intervalMs = options.getInteger('interval') * SECONDS_TO_MS;
     
         // Parse date and interval
         const startDateTime = new Date(startDate);
