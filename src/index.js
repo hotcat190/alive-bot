@@ -19,7 +19,7 @@ const client = new Client({
     ] 
 });
 
-// Register the /guess command
+// Build the commands
 const commands = [
     new SlashCommandBuilder()
         .setName('guess')
@@ -59,7 +59,7 @@ const commands = [
         .setDescription('Schedule a poll to be posted at a specific date and repeated at set intervals.')
         .addStringOption(option => option
             .setName('date')
-            .setDescription('Date for the first poll (YYYY-MM-DD HH:MM) in GMT+0')
+            .setDescription('Date for the first poll (YYYY-MM-DD HH:MM) in UTC+0')
             .setRequired(true))
         .addIntegerOption(option => option
             .setName('poll-duration')
@@ -78,14 +78,14 @@ const commands = [
     
 ];
 
-const rest = new REST().setToken(process.env.TOKEN);
+const rest = new REST().setToken(process.env.DISCORD_TOKEN);
 
 console.log('Attempting to register slash commands...');
 (async () => {
     try {
         console.log('Started refreshing application (/) commands.');
 
-        await rest.put(Routes.applicationCommands(process.env.CLIENT_ID), {
+        await rest.put(Routes.applicationCommands(process.env.APP_ID), {
             body: commands,
         });
 
@@ -206,4 +206,4 @@ client.on('interactionCreate', async (interaction) => {
     }
 });
 
-client.login(process.env.TOKEN);
+client.login(process.env.DISCORD_TOKEN);

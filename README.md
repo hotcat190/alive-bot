@@ -7,4 +7,4 @@ https://discord.com/oauth2/authorize?client_id=1303397903985016886 <br />
 - file upload / yt link cut <br />
 - bets <br />
 
-putting this on hold cuz im fucking bombarded by my assignments now
+we are so back
